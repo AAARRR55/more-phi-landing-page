@@ -30,6 +30,7 @@ DB_NAME=more_phi_store
 JWT_SECRET=replace-with-a-long-random-secret
 STRIPE_API_KEY=sk_test_emergent
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
+CORS_ALLOWED_ORIGINS=https://your-frontend-domain.example,http://localhost:3000
 SMTP_HOST=smtp.your-provider.com
 SMTP_PORT=587
 SMTP_USERNAME=your-smtp-username

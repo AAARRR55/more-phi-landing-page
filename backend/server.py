@@ -30,6 +30,7 @@ DB_NAME = os.environ.get("DB_NAME")
 JWT_SECRET = os.environ.get("JWT_SECRET")
 STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES", "10080"))
+CORS_ALLOWED_ORIGINS_ENV = os.environ.get("CORS_ALLOWED_ORIGINS")
 SMTP_HOST = os.environ.get("SMTP_HOST")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
 SMTP_USERNAME = os.environ.get("SMTP_USERNAME")
@@ -37,8 +38,10 @@ SMTP_PASSWORD = os.environ.get("SMTP_PASSWORD")
 SMTP_FROM = os.environ.get("SMTP_FROM")
 SMTP_USE_TLS = os.environ.get("SMTP_USE_TLS", "true").lower() == "true"
 
-if not MONGO_URL or not DB_NAME or not JWT_SECRET or not STRIPE_API_KEY:
+if not MONGO_URL or not DB_NAME or not JWT_SECRET or not STRIPE_API_KEY or not CORS_ALLOWED_ORIGINS_ENV:
     raise RuntimeError("Missing required backend environment variables")
+
+CORS_ALLOWED_ORIGINS = [origin.strip().rstrip("/") for origin in CORS_ALLOWED_ORIGINS_ENV.split(",") if origin.strip()]
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("more_phi_store")
@@ -51,7 +54,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

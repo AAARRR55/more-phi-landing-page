@@ -194,17 +194,18 @@ def test_checkout_creates_pending_order(api_url: str, session: requests.Session,
 
 
 def test_preflight_and_cors_headers(api_url: str, session: requests.Session):
+    cors_origin = os.environ.get("CORS_TEST_ORIGIN", "http://localhost:3000")
     response = session.options(
         f"{api_url}/api/auth/login",
         headers={
-            "Origin": "https://example.com",
+            "Origin": cors_origin,
             "Access-Control-Request-Method": "POST",
             "Access-Control-Request-Headers": "content-type,authorization",
         },
         timeout=30,
     )
     assert response.status_code in (200, 204)
-    assert response.headers.get("access-control-allow-origin") == "*"
+    assert response.headers.get("access-control-allow-origin") == cors_origin
 
 
 def test_login_rate_limit_returns_429(api_url: str, session: requests.Session):
