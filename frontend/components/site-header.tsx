@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { clearSession, getStoredCustomer, type Customer } from '@/lib/api'
+import { api, clearSession, getStoredCustomer, getToken, type Customer } from '@/lib/api'
 
 const NAV = [
   { id: 'nav-demo', label: 'Morph Pad', href: '#morph-demo' },
@@ -15,6 +15,7 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [user, setUser] = useState<Customer | null>(null)
   const [loading, setLoading] = useState(true)
+  const [purchaseLoading, setPurchaseLoading] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -35,6 +36,22 @@ export function SiteHeader() {
       setUser(null)
     } catch (error) {
       console.error('Failed to sign out:', error)
+    }
+  }
+
+  const startPurchase = async () => {
+    if (!getToken()) {
+      window.localStorage.setItem('more_phi_pending_checkout', '1')
+      window.location.href = '/signup?checkout=1'
+      return
+    }
+    setPurchaseLoading(true)
+    try {
+      const session = await api.createCheckout()
+      window.location.href = session.url
+    } catch (error) {
+      console.error('Unable to open Stripe Checkout:', error)
+      setPurchaseLoading(false)
     }
   }
 
@@ -117,14 +134,16 @@ export function SiteHeader() {
               )}
             </>
           )}
-          <a
+          <button
             id="header-cta-acquire"
-            href="#checkout"
+            type="button"
+            onClick={startPurchase}
+            disabled={purchaseLoading}
             data-testid="header-acquire-link"
             className="glass halo-gold rounded-full px-4 py-2 text-sm font-medium text-primary transition-transform hover:scale-[1.03]"
           >
-            Acquire &mdash; $129
-          </a>
+            {purchaseLoading ? 'Opening...' : 'Acquire — $129'}
+          </button>
         </div>
       </div>
     </header>

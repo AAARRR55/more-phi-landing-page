@@ -3,9 +3,20 @@
 import Image from 'next/image'
 import { useEffect, useRef } from 'react'
 import { FluidBackground } from './fluid-background'
+import { api, getToken } from '@/lib/api'
 
 export function Hero() {
   const mockupRef = useRef<HTMLDivElement>(null)
+
+  const startPurchase = async () => {
+    if (!getToken()) {
+      window.localStorage.setItem('more_phi_pending_checkout', '1')
+      window.location.href = '/signup?checkout=1'
+      return
+    }
+    const session = await api.createCheckout()
+    window.location.href = session.url
+  }
 
   // Subtle parallax tilt on the floating mockup following the cursor.
   useEffect(() => {
@@ -58,9 +69,11 @@ export function Hero() {
           </p>
 
           <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
-            <a
+            <button
               id="hero-cta-acquire"
-              href="#checkout"
+              type="button"
+              onClick={startPurchase}
+              data-testid="hero-acquire-button"
               className="group relative w-full overflow-hidden rounded-full p-px sm:w-auto"
             >
               <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,var(--color-cyan),var(--color-magenta),var(--color-gold),var(--color-cyan))] opacity-70 transition-opacity group-hover:opacity-100" />
@@ -68,7 +81,7 @@ export function Hero() {
                 Acquire More&#8211;Phi
                 <span className="text-primary">$129</span>
               </span>
-            </a>
+            </button>
 
             <a
               id="hero-cta-experience"
