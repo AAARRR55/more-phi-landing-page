@@ -19,6 +19,7 @@ Build a production-ready purchasing system for a VST3 plugin with product metada
 - Security: PCI-safe hosted checkout, no raw card handling, server-side pricing, JWT protection, idempotent provisioning, strict backend CORS, validation, rate limiting.
 
 ## Verification
+- Added expanded QA scenarios and automated backend regression coverage; current suite passes 16/16.
 - yarn build passes for frontend.
 - backend py_compile passes.
 - Backend regression suite: 11/11 tests passed.

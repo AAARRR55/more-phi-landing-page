@@ -97,6 +97,13 @@ def test_schema_endpoint(api_url: str, session: requests.Session):
     assert "orders" in data["collections"]
 
 
+def test_docs_text_endpoint(api_url: str, session: requests.Session):
+    response = session.get(f"{api_url}/api/docs-text", timeout=30)
+    assert response.status_code == 200
+    assert "More-Phi Purchasing API" in response.text
+    assert "Stripe Checkout" in response.text
+
+
 def test_register_duplicate_returns_409(api_url: str, session: requests.Session, registered_customer):
     response = session.post(
         f"{api_url}/api/auth/register",
@@ -133,6 +140,8 @@ def test_login_success_and_me(api_url: str, session: requests.Session, registere
     me_data = me.json()
     assert me_data["email"] == registered_customer["email"].lower()
     assert me_data["name"] == "TEST QA User"
+    assert "password" not in me_data
+    assert "password_hash" not in me_data
 
 
 def test_login_invalid_credentials_401(api_url: str, session: requests.Session, registered_customer):
@@ -193,6 +202,47 @@ def test_checkout_creates_pending_order(api_url: str, session: requests.Session,
     assert created[0]["amount"] == 129.0
 
 
+def test_checkout_ignores_frontend_amount_tampering(api_url: str, session: requests.Session, registered_customer):
+    checkout = session.post(
+        f"{api_url}/api/payments/checkout",
+        json={"origin_url": api_url, "amount": 1.0, "currency": "usd"},
+        headers={"Authorization": f"Bearer {registered_customer['token']}"},
+        timeout=60,
+    )
+    assert checkout.status_code == 200
+    session_id = checkout.json()["session_id"]
+    orders = session.get(
+        f"{api_url}/api/orders",
+        headers={"Authorization": f"Bearer {registered_customer['token']}"},
+        timeout=30,
+    )
+    created = [o for o in orders.json() if o.get("checkout_session_id") == session_id]
+    assert created[0]["amount"] == 129.0
+
+
+def test_empty_licenses_and_invalid_activation(api_url: str, session: requests.Session, registered_customer):
+    licenses = session.get(
+        f"{api_url}/api/licenses",
+        headers={"Authorization": f"Bearer {registered_customer['token']}"},
+        timeout=30,
+    )
+    assert licenses.status_code == 200
+    assert isinstance(licenses.json(), list)
+
+    activation = session.post(
+        f"{api_url}/api/licenses/activate",
+        json={"license_key": "MPHI-FAKE1-FAKE2-FAKE3-FAKE4", "machine_id": "test-machine-123"},
+        headers={"Authorization": f"Bearer {registered_customer['token']}"},
+        timeout=30,
+    )
+    assert activation.status_code == 404
+
+
+def test_payment_status_requires_auth(api_url: str, session: requests.Session):
+    response = session.get(f"{api_url}/api/payments/checkout/status/cs_test_missing", timeout=30)
+    assert response.status_code == 401
+
+
 def test_preflight_and_cors_headers(api_url: str, session: requests.Session):
     cors_origin = os.environ.get("CORS_TEST_ORIGIN", "http://localhost:3000")
     response = session.options(
@@ -206,6 +256,21 @@ def test_preflight_and_cors_headers(api_url: str, session: requests.Session):
     )
     assert response.status_code in (200, 204)
     assert response.headers.get("access-control-allow-origin") == cors_origin
+
+
+def test_disallowed_cors_origin_rejected_on_local_backend(api_url: str, session: requests.Session):
+    if "localhost" not in api_url and "127.0.0.1" not in api_url:
+        pytest.skip("External edge proxy can add its own CORS headers; strict backend CORS is validated locally.")
+    response = session.options(
+        f"{api_url}/api/auth/login",
+        headers={
+            "Origin": "https://malicious.example",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type,authorization",
+        },
+        timeout=30,
+    )
+    assert response.status_code == 400
 
 
 def test_login_rate_limit_returns_429(api_url: str, session: requests.Session):
