@@ -45,6 +45,14 @@ export default function SignUpPage() {
     try {
       const result = await api.register({ name, email, password, company, country })
       setSession(result.access_token, result.customer)
+      const params = new URLSearchParams(window.location.search)
+      const continueToCheckout = params.get('checkout') === '1' || window.localStorage.getItem('more_phi_pending_checkout') === '1'
+      if (continueToCheckout) {
+        window.localStorage.removeItem('more_phi_pending_checkout')
+        const checkout = await api.createCheckout()
+        window.location.href = checkout.url
+        return
+      }
       router.push('/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create an account. Please try again.')
@@ -292,7 +300,7 @@ export default function SignUpPage() {
         {/* Footer info */}
         <div className="mt-8 text-center text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link href="/signin" className="text-cyan font-medium hover:underline" data-testid="signup-signin-link">
+          <Link href="/signin?checkout=1" className="text-cyan font-medium hover:underline" data-testid="signup-signin-link">
             Sign In
           </Link>
         </div>

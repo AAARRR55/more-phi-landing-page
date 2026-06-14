@@ -28,7 +28,8 @@ Backend: copy `backend/.env.example` to `backend/.env` and set:
 MONGO_URL=mongodb://localhost:27017
 DB_NAME=more_phi_store
 JWT_SECRET=replace-with-a-long-random-secret
-STRIPE_API_KEY=sk_test_emergent
+STRIPE_API_KEY=sk_test_your_secret_key
+STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
 ACCESS_TOKEN_EXPIRE_MINUTES=10080
 CORS_ALLOWED_ORIGINS=https://your-frontend-domain.example,http://localhost:3000
 SMTP_HOST=smtp.your-provider.com

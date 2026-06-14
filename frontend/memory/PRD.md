@@ -11,6 +11,7 @@ Build a production-ready purchasing system for a VST3 plugin with product metada
 - Email: SMTP-based production delivery path for license keys, with every attempt logged in email_events.
 
 ## Implemented
+- Updated Stripe environment to use the provided test Stripe account and added publishable key configuration for future embedded Stripe UI.
 - REST API endpoints: health, product, register/login/me, orders, licenses, activation, checkout create/status, Stripe webhook, schema, docs text.
 - Customer-facing UI: signup/signin, Stripe checkout initiation, checkout success polling, customer dashboard with orders/licenses and copy key UI.
 - Developer output: README, env templates, schema endpoint, /developer-docs page, backend regression tests.

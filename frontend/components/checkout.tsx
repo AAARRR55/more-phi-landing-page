@@ -22,7 +22,8 @@ export function Checkout() {
   const startCheckout = async () => {
     setError('')
     if (!getToken()) {
-      router.push('/signup')
+      window.localStorage.setItem('more_phi_pending_checkout', '1')
+      window.location.href = '/signup?checkout=1'
       return
     }
     setLoading(true)
@@ -103,7 +104,7 @@ export function Checkout() {
             <div className="rounded-2xl border border-slate-line bg-background/40 p-4" data-testid="checkout-pci-notice">
               <p className="text-xs font-semibold uppercase tracking-widest text-cyan">PCI-safe Stripe Checkout</p>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Create an account, then pay on Stripe’s hosted checkout page. More-Phi never handles raw card data.
+                Create or sign in to your account, then Stripe opens automatically. More-Phi never handles raw card data.
               </p>
             </div>
             {error && (
