@@ -7,6 +7,7 @@ import { api, clearSession, getStoredCustomer, getToken, type Customer } from '@
 const NAV = [
   { id: 'nav-demo', label: 'Morph Pad', href: '#morph-demo' },
   { id: 'nav-features', label: 'Engine', href: '#features' },
+  { id: 'nav-interface', label: 'Interface', href: '#interface' },
   { id: 'nav-pricing', label: 'Pricing', href: '#checkout' },
   { id: 'nav-specs', label: 'Specs', href: '#specs' },
 ]
