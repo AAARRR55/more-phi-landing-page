@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { api, clearSession, getStoredCustomer, getToken, type Customer } from '@/lib/api'
+import { clearSession, getStoredCustomer, type Customer } from '@/lib/api'
 
 const NAV = [
   { id: 'nav-demo', label: 'Morph Pad', href: '#morph-demo' },
@@ -15,7 +15,6 @@ export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [user, setUser] = useState<Customer | null>(null)
   const [loading, setLoading] = useState(true)
-  const [purchaseLoading, setPurchaseLoading] = useState(false)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -39,27 +38,6 @@ export function SiteHeader() {
     }
   }
 
-  const startPurchase = async () => {
-    if (!getToken()) {
-      window.localStorage.setItem('more_phi_pending_checkout', '1')
-      window.location.href = '/signup?checkout=1'
-      return
-    }
-    setPurchaseLoading(true)
-    try {
-      const customer = getStoredCustomer()
-      if (!customer?.email) {
-        window.location.href = '/signin?checkout=1'
-        return
-      }
-      const session = await api.createCheckout({ productSlug: 'more-phi', email: customer.email })
-      window.location.href = session.url
-    } catch (error) {
-      console.error('Unable to open Stripe Checkout:', error)
-      setPurchaseLoading(false)
-    }
-  }
-
   return (
     <header
       id="site-header"
@@ -77,7 +55,7 @@ export function SiteHeader() {
           }`}
         >
           <span className="relative flex size-6 items-center justify-center">
-            <span className="absolute inset-0 rounded-full bg-cyan/30 blur-[6px]" />
+            <span className="animate-pulse-ring absolute inset-0 rounded-full bg-cyan/30 blur-[6px]" />
             <span className="relative size-3 rounded-full bg-gradient-to-tr from-cyan to-magenta" />
           </span>
           <span className="font-heading text-sm font-bold tracking-[0.2em] text-foreground">
@@ -139,16 +117,6 @@ export function SiteHeader() {
               )}
             </>
           )}
-          <button
-            id="header-cta-acquire"
-            type="button"
-            onClick={startPurchase}
-            disabled={purchaseLoading}
-            data-testid="header-acquire-link"
-            className="glass halo-gold rounded-full px-4 py-2 text-sm font-medium text-primary transition-transform hover:scale-[1.03]"
-          >
-            {purchaseLoading ? 'Opening...' : 'Acquire — $79'}
-          </button>
         </div>
       </div>
     </header>

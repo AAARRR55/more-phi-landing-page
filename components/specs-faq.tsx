@@ -55,7 +55,7 @@ export function SpecsFaq() {
             {SPECS.map((s) => (
               <div
                 key={s.label}
-                className="glass flex flex-col gap-1 p-5 sm:flex-row sm:gap-6"
+                className="gold-leaf glass flex flex-col gap-1 p-5 transition-all duration-300 hover:bg-foreground/[0.02] sm:flex-row sm:gap-6"
               >
                 <dt className="w-32 shrink-0 font-heading text-sm font-bold tracking-wide text-primary">
                   {s.label}
@@ -94,7 +94,7 @@ export function SpecsFaq() {
                     </span>
                     <span
                       className={`flex size-6 shrink-0 items-center justify-center rounded-full border border-slate-line transition-transform duration-300 ${
-                        isOpen ? 'rotate-45 text-cyan' : 'text-muted-foreground'
+                        isOpen ? 'rotate-45 text-gold' : 'text-muted-foreground'
                       }`}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
@@ -139,12 +139,12 @@ export function SiteFooter() {
         <a
           id="footer-cta-acquire"
           href="#checkout"
-          className="group relative mx-auto mt-7 inline-block overflow-hidden rounded-full p-px"
+          className="shimmer-sweep group relative mx-auto mt-7 inline-block overflow-hidden rounded-full p-px"
         >
-          <span className="absolute inset-0 bg-[conic-gradient(from_0deg,var(--color-cyan),var(--color-magenta),var(--color-gold),var(--color-cyan))] opacity-80 transition-opacity group-hover:opacity-100" />
+          <span className="aurora-border-fill absolute inset-0 rounded-full opacity-80 transition-opacity group-hover:opacity-100" />
           <span className="glass-strong relative flex items-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold">
-            Acquire More&#8211;Phi &mdash;{' '}
-            <span className="text-primary">$129</span>
+            Get More&#8211;Phi &mdash;{' '}
+            <span className="text-primary">$79</span>
           </span>
         </a>
       </div>

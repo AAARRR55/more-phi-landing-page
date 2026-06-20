@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { Reveal } from './reveal'
 
 export function FeaturesGrid() {
   return (
@@ -10,22 +11,33 @@ export function FeaturesGrid() {
     >
       <div className="mx-auto mb-14 max-w-2xl text-center">
         <span className="text-xs font-medium tracking-[0.25em] text-primary uppercase">
-          The Subsystems
+          What you can do
         </span>
         <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-          Four engines. One instrument.
+          Four ways to find{' '}
+          <span className="text-gradient-aurora animate-gradient-pan">sounds</span>{' '}
+          no preset gives you.
         </h2>
         <p className="mt-4 text-pretty text-muted-foreground">
-          Every snapshot you create flows through a physics core, a genetic
-          breeder, an AI co-pilot, and a 12-slot memory bank.
+          Every sound you make flows through a physics core, a genetic breeder,
+          an AI co-pilot, and a 12-slot memory bank. Less dialing, more
+          discovering.
         </p>
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
-        <PhysicsCard />
-        <BreedingCard />
-        <McpCard />
-        <SnapshotBankCard />
+        <Reveal delay={0}>
+          <PhysicsCard />
+        </Reveal>
+        <Reveal delay={90}>
+          <BreedingCard />
+        </Reveal>
+        <Reveal delay={0}>
+          <McpCard />
+        </Reveal>
+        <Reveal delay={90}>
+          <SnapshotBankCard />
+        </Reveal>
       </div>
     </section>
   )
@@ -47,7 +59,7 @@ function CardShell({
   return (
     <article
       id={id}
-      className="group glass relative overflow-hidden rounded-3xl p-6 transition-all duration-500 hover:halo-cyan sm:p-8"
+      className="gold-leaf glass group relative h-full overflow-hidden rounded-3xl p-6 transition-all duration-500 hover:halo-cyan hover:-translate-y-1 sm:p-8"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -120,7 +132,7 @@ function PhysicsCard() {
       id="feature-physics"
       index="01"
       title="Physics Engine"
-      desc="Parameters don't just jump — they move. Choose Direct for instant snaps, Elastic for spring-damper overshoot, or Drift for organic Perlin-noise wander."
+      desc="Make your sound breathe. Set the node in motion and let it drift, bounce, or settle toward a target — every parameter moves with real momentum. Choose Direct for instant snaps, Elastic for spring-damper overshoot, or Drift for organic, hands-off wander."
     >
       <div className="relative mb-4 h-16 overflow-hidden rounded-xl border border-slate-line bg-background/40">
         <div className="absolute top-1/2 right-4 left-4 h-px -translate-y-1/2 bg-slate-line" />
@@ -169,7 +181,7 @@ function BreedingCard() {
       id="feature-breeding"
       index="02"
       title="Genetic Breeding Engine"
-      desc="Treat two snapshots as parents. Cross their parameter genomes, apply mutation, and spawn entirely new sounds you'd never dial in by hand."
+      desc="Cross-breed two sounds and discover a third you'd never dial in by hand. Treat snapshots as parents, splice their parameter genomes, and let mutation surface the happy accidents for you."
     >
       <div
         className={`relative mb-4 flex h-16 items-center justify-center gap-1.5 overflow-hidden rounded-xl border border-slate-line bg-background/40 transition-all ${
@@ -225,8 +237,8 @@ function McpCard() {
     <CardShell
       id="feature-mcp"
       index="03"
-      title="MCP Assistant"
-      desc="An on-board assistant speaks the Model Context Protocol. Ask in plain language and watch it move the right parameters automatically."
+      title="AI Co-Pilot"
+      desc="Describe the sound in plain words — “make this brighter,” “less mud in the low mids” — and the built-in assistant moves the right knobs for you. No menu diving, no manual parameter hunting."
     >
       <div className="mb-4 space-y-2 rounded-xl border border-slate-line bg-background/40 p-3">
         <div className="flex justify-end">
@@ -305,7 +317,7 @@ function SnapshotBankCard() {
       id="feature-snapshot-bank"
       index="04"
       title="12-Slot Snapshot Bank"
-      desc="Twelve memory slots arranged like a clock. Each holds a full parameter state; the morph engine interpolates freely between any of them."
+      desc="Twelve full patch states, one gesture away. Each slot holds a complete snapshot — morph freely between any of them, live, right in the mix."
     >
       <div className="relative mx-auto h-40 w-40">
         <div className="absolute inset-4 rounded-full border border-slate-line" />
@@ -327,7 +339,7 @@ function SnapshotBankCard() {
                   : 'var(--slate-line)',
                 color: isActive ? 'var(--color-gold)' : 'var(--muted-foreground)',
                 background: isActive
-                  ? 'oklch(0.82 0.13 90 / 0.15)'
+                  ? 'color-mix(in oklch, var(--color-gold) 15%, transparent)'
                   : 'transparent',
                 boxShadow: isActive
                   ? '0 0 20px -2px var(--color-gold)'

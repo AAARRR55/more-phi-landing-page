@@ -5,12 +5,12 @@ import { useRouter } from 'next/navigation'
 import { api, getStoredCustomer, getToken } from '@/lib/api'
 
 const FEATURES = [
-  'VST3 & AU plugin formats',
-  'Powered by the JUCE 8 audio engine',
-  'Sub-2% CPU footprint at 96 kHz',
-  '12-slot snapshot bank with genetic breeding',
-  'Built-in MCP AI assistant',
-  'Lifetime updates, no subscription',
+  'VST3 & AU — drop it into any modern DAW',
+  'Runs heavy sessions without breaking a sweat — sub-2% CPU at 96 kHz',
+  '12 snapshots you can cross-breed into sounds no preset offers',
+  'A plain-language AI co-pilot that moves the knobs for you',
+  'Lifetime updates, no subscription — ever',
+  'One purchase covers every personal machine you own',
 ]
 
 export function Checkout() {
@@ -58,7 +58,7 @@ export function Checkout() {
         </h2>
       </div>
 
-      <div className="glass-strong mx-auto grid max-w-4xl overflow-hidden rounded-3xl md:grid-cols-2">
+      <div className="gold-leaf glass-strong shimmer-sweep mx-auto grid max-w-4xl overflow-hidden rounded-3xl md:grid-cols-2">
         {/* Left: value */}
         <div className="border-b border-slate-line p-8 md:border-r md:border-b-0">
           <div
@@ -69,7 +69,7 @@ export function Checkout() {
           >
             <span
               className={`font-heading text-5xl font-bold transition-all ${
-                hovering ? 'text-gradient-gold' : 'text-foreground'
+                hovering ? 'text-gradient-gold animate-gradient-pan' : 'text-foreground'
               }`}
             >
               $79
@@ -124,13 +124,20 @@ export function Checkout() {
               type="button"
               onClick={startCheckout}
               disabled={loading}
-              className="group relative mt-2 w-full overflow-hidden rounded-xl p-px"
+              className="shimmer-sweep group relative mt-2 w-full overflow-hidden rounded-full p-px"
             >
-              <span className="absolute inset-0 bg-[conic-gradient(from_0deg,var(--color-cyan),var(--color-magenta),var(--color-gold),var(--color-cyan))] opacity-80 transition-opacity group-hover:opacity-100" />
-              <span className="glass-strong relative flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-foreground">
-                {loading ? 'Opening Stripe...' : 'Pay $79 with Stripe'}
+              <span className="aurora-border-fill absolute inset-0 rounded-full opacity-80 transition-opacity group-hover:opacity-100" />
+              <span className="glass-strong relative flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-foreground">
+                {loading ? 'Opening Stripe...' : 'Get instant access — $79'}
               </span>
             </button>
+
+            <p className="flex items-center justify-center gap-1.5 pt-1 text-center text-[11px] text-primary/80" data-testid="checkout-guarantee-copy">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z" />
+              </svg>
+              30-day refund &middot; Lifetime updates &middot; No subscription
+            </p>
 
             <p className="flex items-center justify-center gap-1.5 pt-2 text-center text-[11px] text-muted-foreground" data-testid="checkout-security-copy">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

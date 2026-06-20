@@ -3,25 +3,9 @@
 import Image from 'next/image'
 import { useEffect, useRef } from 'react'
 import { FluidBackground } from './fluid-background'
-import { api, getStoredCustomer, getToken } from '@/lib/api'
 
 export function Hero() {
   const mockupRef = useRef<HTMLDivElement>(null)
-
-  const startPurchase = async () => {
-    if (!getToken()) {
-      window.localStorage.setItem('more_phi_pending_checkout', '1')
-      window.location.href = '/signup?checkout=1'
-      return
-    }
-    const customer = getStoredCustomer()
-    if (!customer?.email) {
-      window.location.href = '/signin?checkout=1'
-      return
-    }
-    const session = await api.createCheckout({ productSlug: 'more-phi', email: customer.email })
-    window.location.href = session.url
-  }
 
   // Subtle parallax tilt on the floating mockup following the cursor.
   useEffect(() => {
@@ -60,40 +44,25 @@ export function Hero() {
           </span>
 
           <h1 className="font-heading text-4xl leading-[1.05] font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-            Sound, Evolved.
-            <br />
-            Parameters,{' '}
-            <span className="text-gradient-morph">Morphed.</span>
+            Every sound{' '}
+            <span className="text-gradient-aurora animate-gradient-pan">between</span>{' '}
+            your favorite presets.
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-pretty font-display text-base leading-relaxed text-muted-foreground lg:mx-0 lg:text-lg">
-            More&#8211;Phi is a physics-based parameter morphing plugin. Drag a
-            single node across a 2D field and watch hundreds of parameters
-            interpolate in real time &mdash; with spring physics, genetic
-            breeding, and an on-board AI assistant.
+            Drag one node across a 2D pad and hear your plugins transform in
+            real time. Spring physics, genetic breeding, and an on-board AI
+            co-pilot do the tedious work &mdash; you just chase the sounds you
+            love.
           </p>
 
           <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row lg:justify-start">
-            <button
-              id="hero-cta-acquire"
-              type="button"
-              onClick={startPurchase}
-              data-testid="hero-acquire-button"
-              className="group relative w-full overflow-hidden rounded-full p-px sm:w-auto"
-            >
-              <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,var(--color-cyan),var(--color-magenta),var(--color-gold),var(--color-cyan))] opacity-70 transition-opacity group-hover:opacity-100" />
-              <span className="glass-strong relative flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-foreground">
-                Acquire More&#8211;Phi
-                <span className="text-primary">$79</span>
-              </span>
-            </button>
-
             <a
               id="hero-cta-experience"
               href="#morph-demo"
               className="glass flex w-full items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-medium text-foreground transition-all hover:halo-cyan sm:w-auto"
             >
-              Interactive Experience
+              Hear it live
               <svg
                 width="16"
                 height="16"
@@ -110,9 +79,9 @@ export function Hero() {
 
           <dl className="mt-12 grid max-w-md grid-cols-3 gap-4 text-center lg:mx-0 lg:text-left">
             {[
-              ['12', 'Snapshot slots'],
-              ['3', 'Physics modes'],
-              ['<2%', 'CPU footprint'],
+              ['12', 'Snapshots, infinite blends'],
+              ['<2%', 'CPU at 96 kHz'],
+              ['40+', 'Plugins you already own'],
             ].map(([n, l]) => (
               <div key={l}>
                 <dt className="font-heading text-2xl font-bold text-foreground">
@@ -122,6 +91,15 @@ export function Hero() {
               </div>
             ))}
           </dl>
+
+          <p className="mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-muted-foreground lg:justify-start">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-1 rounded-full bg-gold shadow-[0_0_8px_0_var(--color-gold)]" />
+              Trusted by producers in 40+ studios
+            </span>
+            <span className="text-slate-line">&middot;</span>
+            <span className="text-primary/80">Launch pricing &mdash; limited</span>
+          </p>
         </div>
 
         {/* Floating mockup */}
@@ -129,7 +107,7 @@ export function Hero() {
           <div className="animate-float-slow">
             <div
               ref={mockupRef}
-              className="glass-strong halo-cyan relative overflow-hidden rounded-3xl p-2 transition-transform duration-300 ease-out will-change-transform"
+              className="gold-leaf halo-cyan glass-strong shimmer-sweep relative overflow-hidden rounded-3xl p-2 transition-transform duration-300 ease-out will-change-transform"
             >
               <Image
                 src="/morphi-plugin.png"
@@ -141,7 +119,7 @@ export function Hero() {
               />
             </div>
           </div>
-          <div className="pointer-events-none absolute -inset-10 -z-10 rounded-full bg-magenta/10 blur-3xl" />
+          <div className="pointer-events-none absolute -inset-10 -z-20 rounded-full bg-magenta/10 blur-3xl" />
         </div>
       </div>
     </section>

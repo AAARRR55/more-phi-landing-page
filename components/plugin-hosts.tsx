@@ -1,3 +1,5 @@
+import { Reveal } from './reveal'
+
 const PLUGIN_GROUPS = [
   {
     category: 'Synthesizers',
@@ -75,42 +77,44 @@ export function PluginHosts() {
     >
       <div className="mx-auto max-w-2xl text-center">
         <span className="text-xs font-medium tracking-[0.25em] text-cyan uppercase">
-          Universal VST3 Host
+          Works with what you own
         </span>
         <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-          Morph the plugins you{' '}
-          <span className="text-gradient-morph">already own.</span>
+          It already speaks your{' '}
+          <span className="text-gradient-aurora animate-gradient-pan">plugins' language.</span>
         </h2>
         <p className="mx-auto mt-5 max-w-xl text-pretty text-sm leading-relaxed text-muted-foreground">
-          More&#8211;Phi loads any compliant VST3 instrument or effect directly
-          inside its engine, snapshots its full parameter state, and interpolates
-          across it in real time. Below are just a few of the biggest commercial
-          plugins it hosts seamlessly.
+          More&#8211;Phi hosts any VST3 instrument or effect directly inside its
+          engine, snapshots the full parameter state, and morphs across it in
+          real time. Here are a few of the 40+ it runs seamlessly today.
         </p>
       </div>
 
       <div className="mt-14 grid gap-4 sm:grid-cols-2">
-        {PLUGIN_GROUPS.map((group) => (
-          <div
-            key={group.category}
-            className="glass group rounded-2xl border border-slate-line p-6 transition-colors hover:border-cyan/40"
-          >
-            <div className="flex items-center gap-3">
-              <span className="size-2 rounded-full bg-gradient-to-tr from-cyan to-magenta" />
-              <h3 className="font-heading text-sm font-bold tracking-wide text-primary">
-                {group.category}
-              </h3>
+        {PLUGIN_GROUPS.map((group, gi) => (
+          <Reveal key={group.category} delay={gi * 80}>
+            <div className="gold-leaf glass group h-full rounded-2xl border border-slate-line p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan/40 hover:halo-cyan">
+              <div className="flex items-center gap-3">
+                <span className="relative flex size-7 items-center justify-center rounded-lg border border-gold/30 bg-gold/10">
+                  <span className="absolute inset-0 rounded-lg bg-gold/10 blur-md" />
+                  <span className="relative size-2 rounded-full bg-gradient-to-tr from-cyan via-gold to-magenta" />
+                </span>
+                <h3 className="font-heading text-sm font-bold tracking-wide text-primary">
+                  {group.category}
+                </h3>
+              </div>
+              <ul className="mt-5 flex flex-wrap gap-2">
+                {group.plugins.map((name) => (
+                  <li key={name}>
+                    <span className="shimmer-sweep inline-flex items-center gap-1.5 rounded-full border border-slate-line bg-foreground/[0.02] px-3 py-1.5 text-xs font-medium text-muted-foreground transition-all hover:border-cyan/50 hover:bg-foreground/[0.04] hover:text-foreground">
+                      <span className="size-1 rounded-full bg-cyan/70" />
+                      {name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="mt-5 flex flex-wrap gap-2">
-              {group.plugins.map((name) => (
-                <li key={name}>
-                  <span className="inline-flex rounded-full border border-slate-line bg-foreground/[0.02] px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-cyan/50 hover:text-foreground">
-                    {name}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          </Reveal>
         ))}
       </div>
 

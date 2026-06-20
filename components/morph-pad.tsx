@@ -34,7 +34,7 @@ const CORNERS: Corner[] = [
     cutoff: 750,
     q: 1.0,
     detune: 8,
-    hue: 200,
+    hue: 200, // brand cyan
   },
   {
     id: 'corner-b',
@@ -47,7 +47,7 @@ const CORNERS: Corner[] = [
     cutoff: 300,
     q: 4.0,
     detune: 12,
-    hue: 30,
+    hue: 330, // brand magenta
   },
   {
     id: 'corner-c',
@@ -60,7 +60,7 @@ const CORNERS: Corner[] = [
     cutoff: 1000,
     q: 2.5,
     detune: 6,
-    hue: 95,
+    hue: 45, // brand gold
   },
   {
     id: 'corner-d',
@@ -73,7 +73,7 @@ const CORNERS: Corner[] = [
     cutoff: 1400,
     q: 6.0,
     detune: 18,
-    hue: 320,
+    hue: 165, // teal — bridges cyan↔gold harmonically
   },
 ]
 
@@ -443,16 +443,16 @@ export function MorphPad() {
           Interactive Experience
         </span>
         <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight text-balance sm:text-4xl">
-          Drag the node. Hear the morph.
+          Drag the node. Hear the{' '}
+          <span className="text-gradient-aurora animate-gradient-pan">morph.</span>
         </h2>
         <p className="mt-4 text-pretty text-muted-foreground">
-          This is the real engine, running in your browser via the Web Audio
-          API. Each corner is a live voice; your position crossfades them with
-          inverse distance weighting.
+          The real engine, running live in your browser. Each corner is a sound
+          &mdash; drag the node and hear them blend into something new.
         </p>
       </div>
 
-      <div className="glass-strong mx-auto grid max-w-5xl gap-8 rounded-3xl p-6 lg:grid-cols-[1fr_auto] lg:p-8">
+      <div className="gold-leaf glass-strong shimmer-sweep mx-auto grid max-w-5xl gap-8 rounded-3xl p-6 lg:grid-cols-[1fr_auto] lg:p-8">
         {/* Pad + dials */}
         <div className="flex flex-col items-center gap-6">
           <div className="flex w-full items-center justify-between">
@@ -500,7 +500,7 @@ export function MorphPad() {
               setDragging(true)
               updateFromEvent(e.clientX, e.clientY)
             }}
-            className="grid-noise relative aspect-square w-full max-w-md cursor-crosshair touch-none overflow-hidden rounded-2xl border border-slate-line bg-[radial-gradient(circle_at_50%_50%,oklch(0.2_0.03_280),oklch(0.14_0.005_280))]"
+            className="gold-leaf grid-noise relative aspect-square w-full max-w-md cursor-crosshair touch-none overflow-hidden rounded-2xl border border-slate-line bg-[radial-gradient(circle_at_50%_50%,oklch(0.2_0.03_280),oklch(0.14_0.005_280))] shadow-[inset_0_0_60px_-20px_oklch(0.82_0.16_200/0.25)]"
           >
             {/* gradient field reacting to position */}
             <div
@@ -555,6 +555,7 @@ export function MorphPad() {
               }}
             >
               <span className="absolute inset-0 animate-ping rounded-full bg-cyan/30" />
+              <span className="animate-pulse-ring absolute -inset-2 rounded-full border border-cyan/40" />
               <span className="absolute inset-0 rounded-full border border-foreground/80 bg-gradient-to-tr from-cyan to-magenta shadow-[0_0_24px_-2px_var(--color-cyan)]" />
             </div>
           </div>
