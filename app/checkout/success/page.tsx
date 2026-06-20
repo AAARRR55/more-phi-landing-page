@@ -15,6 +15,14 @@ function CheckoutSuccessContent() {
   const [done, setDone] = useState(false)
   const [failed, setFailed] = useState(false)
 
+  // Auth note: the browser arrives here via a top-level redirect FROM Stripe
+  // (a different site). The backend sets auth as `sameSite: "strict"` httpOnly
+  // cookies, which browsers do NOT attach on cross-site navigations, so the
+  // mp_auth cookie is absent on this initial page load. The status poll works
+  // ONLY because the JWT is also kept in localStorage and lib/api.ts sends it
+  // as `Authorization: Bearer` on every request (in addition to
+  // `credentials: 'include'`). Do NOT refactor this to a cookie-only flow or
+  // the order-status lookup will 401 for users coming back from Stripe.
   useEffect(() => {
     if (!sessionId) {
       setFailed(true)

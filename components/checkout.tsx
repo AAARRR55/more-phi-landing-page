@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { api, getToken } from '@/lib/api'
+import { api, getStoredCustomer, getToken } from '@/lib/api'
 
 const FEATURES = [
   'VST3 & AU plugin formats',
@@ -28,7 +28,13 @@ export function Checkout() {
     }
     setLoading(true)
     try {
-      const session = await api.createCheckout()
+      const customer = getStoredCustomer()
+      if (!customer?.email) {
+        setError('Please sign in to continue checkout.')
+        setLoading(false)
+        return
+      }
+      const session = await api.createCheckout({ productSlug: 'more-phi', email: customer.email })
       window.location.href = session.url
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to start checkout')
@@ -66,10 +72,10 @@ export function Checkout() {
                 hovering ? 'text-gradient-gold' : 'text-foreground'
               }`}
             >
-              $129
+              $79
             </span>
             <span className="text-sm text-muted-foreground line-through">
-              $199
+              $129
             </span>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -122,7 +128,7 @@ export function Checkout() {
             >
               <span className="absolute inset-0 bg-[conic-gradient(from_0deg,var(--color-cyan),var(--color-magenta),var(--color-gold),var(--color-cyan))] opacity-80 transition-opacity group-hover:opacity-100" />
               <span className="glass-strong relative flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold text-foreground">
-                {loading ? 'Opening Stripe...' : 'Pay $129 with Stripe'}
+                {loading ? 'Opening Stripe...' : 'Pay $79 with Stripe'}
               </span>
             </button>
 

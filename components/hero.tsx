@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { useEffect, useRef } from 'react'
 import { FluidBackground } from './fluid-background'
-import { api, getToken } from '@/lib/api'
+import { api, getStoredCustomer, getToken } from '@/lib/api'
 
 export function Hero() {
   const mockupRef = useRef<HTMLDivElement>(null)
@@ -14,7 +14,12 @@ export function Hero() {
       window.location.href = '/signup?checkout=1'
       return
     }
-    const session = await api.createCheckout()
+    const customer = getStoredCustomer()
+    if (!customer?.email) {
+      window.location.href = '/signin?checkout=1'
+      return
+    }
+    const session = await api.createCheckout({ productSlug: 'more-phi', email: customer.email })
     window.location.href = session.url
   }
 
@@ -79,7 +84,7 @@ export function Hero() {
               <span className="absolute inset-0 rounded-full bg-[conic-gradient(from_0deg,var(--color-cyan),var(--color-magenta),var(--color-gold),var(--color-cyan))] opacity-70 transition-opacity group-hover:opacity-100" />
               <span className="glass-strong relative flex items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-foreground">
                 Acquire More&#8211;Phi
-                <span className="text-primary">$129</span>
+                <span className="text-primary">$79</span>
               </span>
             </button>
 

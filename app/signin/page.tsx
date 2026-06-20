@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Mail, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react'
@@ -14,6 +14,20 @@ export default function SignInPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [registered, setRegistered] = useState(false)
+  const [checkoutFlow, setCheckoutFlow] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const isCheckout = params.get('checkout') === '1'
+    setCheckoutFlow(isCheckout)
+    if (!isCheckout) {
+      window.localStorage.removeItem('more_phi_pending_checkout')
+    }
+    if (params.get('registered') === '1') {
+      setRegistered(true)
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,15 +43,19 @@ export default function SignInPage() {
     try {
       const result = await api.login({ email, password })
       setSession(result.access_token, result.customer)
-      const params = new URLSearchParams(window.location.search)
-      const continueToCheckout = params.get('checkout') === '1' || window.localStorage.getItem('more_phi_pending_checkout') === '1'
+      const continueToCheckout = checkoutFlow || window.localStorage.getItem('more_phi_pending_checkout') === '1'
       if (continueToCheckout) {
         window.localStorage.removeItem('more_phi_pending_checkout')
-        const checkout = await api.createCheckout()
-        window.location.href = checkout.url
-        return
+        try {
+          const checkout = await api.createCheckout({ productSlug: 'more-phi', email: result.customer.email })
+          window.location.href = checkout.url
+          return
+        } catch (checkoutErr) {
+          router.push('/')
+          return
+        }
       }
-      router.push('/dashboard')
+      router.push('/')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to sign in. Please check your credentials.')
     } finally {
@@ -85,6 +103,12 @@ export default function SignInPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5" data-testid="signin-form">
+          {registered && (
+            <div className="rounded-xl border border-cyan/20 bg-cyan/10 p-3 text-xs text-cyan text-center" data-testid="signin-registered-message">
+              Account created. Please sign in.
+            </div>
+          )}
+
           {error && (
             <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive text-center" data-testid="signin-error-message">
               {error}
@@ -170,7 +194,7 @@ export default function SignInPage() {
         {/* Footer info */}
         <div className="mt-8 text-center text-sm text-muted-foreground">
           Don't have an account?{' '}
-          <Link href="/signup?checkout=1" className="text-cyan font-medium hover:underline" data-testid="signin-signup-link">
+          <Link href={checkoutFlow ? '/signup?checkout=1' : '/signup'} className="text-cyan font-medium hover:underline" data-testid="signin-signup-link">
             Sign Up
           </Link>
         </div>

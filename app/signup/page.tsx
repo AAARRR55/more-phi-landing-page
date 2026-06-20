@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Building2, Globe2, Mail, Lock, User, ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { api, setSession } from '@/lib/api'
+import { api } from '@/lib/api'
 
 export default function SignUpPage() {
   const router = useRouter()
@@ -20,6 +20,16 @@ export default function SignUpPage() {
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [checkoutFlow, setCheckoutFlow] = useState(false)
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const isCheckout = params.get('checkout') === '1'
+    setCheckoutFlow(isCheckout)
+    if (!isCheckout) {
+      window.localStorage.removeItem('more_phi_pending_checkout')
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,17 +53,12 @@ export default function SignUpPage() {
     setIsLoading(true)
 
     try {
-      const result = await api.register({ name, email, password, company, country })
-      setSession(result.access_token, result.customer)
-      const params = new URLSearchParams(window.location.search)
-      const continueToCheckout = params.get('checkout') === '1' || window.localStorage.getItem('more_phi_pending_checkout') === '1'
-      if (continueToCheckout) {
-        window.localStorage.removeItem('more_phi_pending_checkout')
-        const checkout = await api.createCheckout()
-        window.location.href = checkout.url
+      await api.register({ name, email, password, company, country })
+      if (checkoutFlow) {
+        router.push('/signin?checkout=1')
         return
       }
-      router.push('/dashboard')
+      router.push('/signin?registered=1')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create an account. Please try again.')
     } finally {
@@ -300,7 +305,7 @@ export default function SignUpPage() {
         {/* Footer info */}
         <div className="mt-8 text-center text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link href="/signin?checkout=1" className="text-cyan font-medium hover:underline" data-testid="signup-signin-link">
+          <Link href={checkoutFlow ? '/signin?checkout=1' : '/signin'} className="text-cyan font-medium hover:underline" data-testid="signup-signin-link">
             Sign In
           </Link>
         </div>

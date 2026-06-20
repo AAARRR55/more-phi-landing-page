@@ -47,7 +47,12 @@ export function SiteHeader() {
     }
     setPurchaseLoading(true)
     try {
-      const session = await api.createCheckout()
+      const customer = getStoredCustomer()
+      if (!customer?.email) {
+        window.location.href = '/signin?checkout=1'
+        return
+      }
+      const session = await api.createCheckout({ productSlug: 'more-phi', email: customer.email })
       window.location.href = session.url
     } catch (error) {
       console.error('Unable to open Stripe Checkout:', error)
@@ -142,7 +147,7 @@ export function SiteHeader() {
             data-testid="header-acquire-link"
             className="glass halo-gold rounded-full px-4 py-2 text-sm font-medium text-primary transition-transform hover:scale-[1.03]"
           >
-            {purchaseLoading ? 'Opening...' : 'Acquire — $129'}
+            {purchaseLoading ? 'Opening...' : 'Acquire — $79'}
           </button>
         </div>
       </div>

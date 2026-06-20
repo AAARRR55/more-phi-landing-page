@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Check, Copy, KeyRound, LogOut, ReceiptText, ShieldCheck } from 'lucide-react'
+import { Check, Copy, Download, KeyRound, LogOut, ReceiptText, ShieldCheck } from 'lucide-react'
 import { api, clearSession, getStoredCustomer, type Customer, type License, type Order } from '@/lib/api'
 
 export default function DashboardPage() {
@@ -84,13 +84,27 @@ export default function DashboardPage() {
                   <article key={license.id} className="p-5" data-testid={`dashboard-license-${license.id}`}>
                     <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                       <div>
-                        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{license.product_id}</p>
+                        <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{license.product_name || license.product_id}</p>
                         <code className="mt-2 block break-all font-mono text-sm text-cyan" data-testid={`dashboard-license-key-${license.id}`}>{license.license_key}</code>
                       </div>
-                      <button onClick={() => copyKey(license.license_key)} className="glass flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" data-testid={`dashboard-copy-license-${license.id}`}>
-                        {copied === license.license_key ? <Check className="size-4 text-cyan" /> : <Copy className="size-4" />}
-                        {copied === license.license_key ? 'Copied' : 'Copy'}
-                      </button>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {license.download_url && (
+                          <a
+                            href={license.download_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="glass flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm hover:text-cyan"
+                            data-testid={`dashboard-download-license-${license.id}`}
+                          >
+                            <Download className="size-4" />
+                            Download VST3
+                          </a>
+                        )}
+                        <button onClick={() => copyKey(license.license_key)} className="glass flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm" data-testid={`dashboard-copy-license-${license.id}`}>
+                          {copied === license.license_key ? <Check className="size-4 text-cyan" /> : <Copy className="size-4" />}
+                          {copied === license.license_key ? 'Copied' : 'Copy'}
+                        </button>
+                      </div>
                     </div>
                     <div className="mt-4 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3" data-testid={`dashboard-license-meta-${license.id}`}>
                       <span>Status: {license.status}</span>
